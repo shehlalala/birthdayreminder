@@ -21,7 +21,10 @@ export default function RootLayout() {
           headerTitleStyle: { color: colors.text },
           contentStyle: { backgroundColor: colors.background },
         }}
-      />
+      >
+        <Stack.Screen name="people/new" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="people/[id]/edit" options={{ presentation: 'modal' }} />
+      </Stack>
     </>
   );
 }

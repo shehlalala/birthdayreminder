@@ -8,6 +8,8 @@ const cssVars: Colors = {
   text: 'var(--color-text)',
   muted: 'var(--color-muted)',
   accent: 'var(--color-accent)',
+  onAccent: 'var(--color-onAccent)',
+  danger: 'var(--color-danger)',
   border: 'var(--color-border)',
 };
 

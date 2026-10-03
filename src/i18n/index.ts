@@ -12,3 +12,11 @@ export function t(key: MessageKey, vars?: Record<string, string>): string {
   }
   return text;
 }
+
+type PluralBase<K> = K extends `${infer B}_one` ? B : never;
+
+/** Picks `<key>_one` or `<key>_other` and fills {count}. English rules for now. */
+export function tn(key: PluralBase<MessageKey>, count: number, vars?: Record<string, string>): string {
+  const form = count === 1 ? 'one' : 'other';
+  return t(`${key}_${form}` as MessageKey, { ...vars, count: String(count) });
+}

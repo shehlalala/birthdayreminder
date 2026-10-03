@@ -6,6 +6,9 @@ export const palette = {
     text: '#2B2420',
     muted: '#6B5F57',
     accent: '#B4472F',
+    /** Text on a filled accent background. */
+    onAccent: '#FFFFFF',
+    danger: '#B3261E',
     border: '#EADFD6',
   },
   dark: {
@@ -14,6 +17,8 @@ export const palette = {
     text: '#F3ECE6',
     muted: '#B5A99F',
     accent: '#F08A72',
+    onAccent: '#1A1715',
+    danger: '#FF8A80',
     border: '#3A332E',
   },
 } as const;

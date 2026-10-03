@@ -65,7 +65,7 @@ One Expo project (SDK 57), one codebase, that ships as both the iOS app and a st
 ### Notifications stay local
 - Use `expo-notifications` local notifications, scheduled on the device. No push server needed.
 - iOS allows only **64 pending local notifications per app**. Schedule one-off notifications for the next occurrence only, sorted by date, capped at the soonest ~60. Reschedule on app foreground, after sync, and whenever a person or reminder changes. Keep this in one pure, unit-tested module.
-- **Feb 29 birthdays:** treat as Feb 28 in non-leap years (single helper function).
+- **Feb 29 birthdays:** treat as Feb 28 in non-leap years (single helper function: `birthdayInYear` in `src/domain/birthdays.ts`). Birthday math works on calendar dates, never Date instants.
 - Use the device's local time zone; recompute on time-zone change.
 - Ask for notification permission when the user saves their first reminder, with a short explanation screen first. If denied, the app still works; show a gentle banner.
 
@@ -140,7 +140,7 @@ Work in phases and stop for my review after each one. Deploy the public web page
 
 1. ✅ Expo Router project with web static output, `content/` schema and types, `brand.ts`, relation presets, semantic UI primitives, and a public/private route split. Verify static export produces real HTML for one sample public page.
 2. ✅ Supabase: schema migrations with RLS and policy tests; anonymous auth, local SQLite cache, sync layer.
-3. App: people list, add/edit/delete person (with relation), upcoming-birthday sorting.
+3. ✅ App: people list, add/edit/delete person (with relation), upcoming-birthday sorting. (Photo not done yet: it needs `expo-image-picker` plus Storage upload in sync; do it with Phase 4's detail screen.)
 4. App: person detail screen and gift ideas, with "Need ideas?" linking to `/gifts/[relation]` and "Write a message" linking to `/messages/[relation]`.
 5. App: reminders UI, notification scheduling module (64-limit, Feb 29, rescheduling), permission flow, deep links.
 6. App: Settings, Sign in with Apple account linking, in-app account deletion.

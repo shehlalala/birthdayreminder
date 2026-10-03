@@ -1,4 +1,3 @@
-import { randomUUID } from 'expo-crypto';
 import { AppState } from 'react-native';
 
 import { onDataChange } from './changes';
@@ -7,9 +6,8 @@ import { supabaseRemote } from './remote';
 import { ensureSession } from './session';
 import { supabase } from './supabase';
 import { SyncError, syncOnce } from './sync';
-import { ensureSettings, type WriteDeps } from './writes';
-
-export const appWriteDeps: WriteDeps = { newId: randomUUID, now: () => new Date() };
+import { appWriteDeps } from './appDeps';
+import { ensureSettings } from './writes';
 
 export type SyncStatus = 'idle' | 'syncing' | 'offline' | 'local-only' | 'error';
 
@@ -55,7 +53,7 @@ async function runOnce(): Promise<void> {
       return;
     }
     status = 'syncing';
-    await syncOnce(db, supabaseRemote(supabase, userId), userId, { newId: randomUUID });
+    await syncOnce(db, supabaseRemote(supabase, userId), userId, { newId: appWriteDeps.newId });
     status = 'idle';
   } catch (error) {
     status = error instanceof SyncError && error.kind === 'offline' ? 'offline' : 'error';

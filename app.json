@@ -1,0 +1,20 @@
+{
+  "expo": {
+    "name": "Birthday Reminder",
+    "slug": "birthday-reminder",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "birthdayreminder",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "bundleIdentifier": "com.example.birthdayreminder",
+      "supportsTablet": false
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": ["expo-router"]
+  }
+}

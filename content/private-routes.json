@@ -1,0 +1,4 @@
+{
+  "//": "App-only route prefixes. Never in the sitemap, llms.txt or Universal Link marketing; always noindex on web.",
+  "prefixes": ["/people", "/settings"]
+}

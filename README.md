@@ -10,7 +10,8 @@ npm run ios         # run the app (needs a Mac with Xcode, or Expo Go)
 npm run web         # dev server for the website
 npm run build:web   # static export to dist/ + public/private checks
 npm run typecheck
-npm test
+npm test            # unit tests, incl. the sync engine against the real local schema
+npm run test:db     # applies supabase/migrations to a throwaway Postgres and checks RLS (non-root user)
 ```
 
 ## Layout
@@ -19,7 +20,18 @@ npm test
 - `src/app/` — routes (thin; re-export screens)
 - `src/features/` — screens. `*.web.tsx` files replace app-only screens on the web with a noindex placeholder.
 - `src/ui/` — semantic primitives that render as real HTML on web
+- `src/data/` — local SQLite, writes, sync engine, Supabase client (app only; `*.web.tsx` keeps it out of the website)
+- `supabase/` — migrations, config, and policy tests
 - `scripts/postexport.mjs` — cleans and verifies the web export
+
+## Connecting Supabase
+
+The app runs fully local without Supabase; sync starts once these are set.
+
+1. Create a project at supabase.com (free tier).
+2. Authentication → Sign In / Providers: turn on **Allow anonymous sign-ins**.
+3. Apply the schema: `npx supabase link --project-ref <ref>` then `npx supabase db push`.
+4. Copy `.env.example` to `.env` and fill in the project URL and **anon** key (never the service role key).
 
 ## Before the first public deploy
 

@@ -53,12 +53,13 @@ One Expo project (SDK 57), one codebase, that ships as both the iOS app and a st
 
 ### Offline-first
 - Keep a local SQLite cache (`expo-sqlite`) as the source the UI reads from, syncing to Supabase in the background. The app must work fully offline and on a plane.
-- Simple conflict rule: last write wins, using `updated_at`.
+- Simple conflict rule: last write wins, using `updated_at`. The server enforces it too (`sync_guard` trigger skips older writes), and sets `synced_at`, which is the pull cursor. Deletes are soft (`deleted_at`) so they reach other devices.
+- All local writes go through `src/data/writes.ts` (fresh, never-backwards `updated_at`; marks the row dirty). The engine is `src/data/sync.ts`; it's tested end to end against the real local schema and a fake server in `sync.test.ts`. The database rules are tested with `npm run test:db`.
 - **First launch can be offline.** Rows get a client-generated UUID and are created locally without a `user_id`. The anonymous Supabase session is created the first time the device is online, and the `user_id` is attached during the first sync. Apple provides no automatic user ID that Supabase accepts as `auth.uid()`; don't try to substitute one.
 - Later idea (not v1): StoreKit `AppTransaction.appTransactionID` could restore data after a reinstall without sign-in, but it needs a server-side verifier that mints Supabase sessions.
 
 ### Account linking and deletion
-- Linking Sign in with Apple can fail because that Apple ID already owns an account (e.g. after a reinstall). Handle it: sign into the existing account and merge local rows into it.
+- Linking Sign in with Apple can fail because that Apple ID already owns an account (e.g. after a reinstall). Handle it: sign into the existing account and merge local rows into it. The sync engine already does the merge when the signed-in user changes: it gives local rows new ids (the server refuses to move a row id between users), drops tombstones, and pulls the account from scratch. Phase 6 should delete the abandoned anonymous user's server rows (best effort) before switching.
 - Account deletion runs in a Supabase Edge Function (it needs the service role, which never ships in the app). It must also revoke the Sign in with Apple token via Apple's REST API.
 
 ### Notifications stay local
@@ -138,7 +139,7 @@ Reality check that drives the design: ChatGPT and Claude cannot open a native iO
 Work in phases and stop for my review after each one. Deploy the public web pages as early as possible (they don't need App Store approval, and AI visibility takes months to build).
 
 1. ✅ Expo Router project with web static output, `content/` schema and types, `brand.ts`, relation presets, semantic UI primitives, and a public/private route split. Verify static export produces real HTML for one sample public page.
-2. Supabase: schema migrations with RLS and policy tests; anonymous auth, local SQLite cache, sync layer.
+2. ✅ Supabase: schema migrations with RLS and policy tests; anonymous auth, local SQLite cache, sync layer.
 3. App: people list, add/edit/delete person (with relation), upcoming-birthday sorting.
 4. App: person detail screen and gift ideas, with "Need ideas?" linking to `/gifts/[relation]` and "Write a message" linking to `/messages/[relation]`.
 5. App: reminders UI, notification scheduling module (64-limit, Feb 29, rescheduling), permission flow, deep links.

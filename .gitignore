@@ -14,3 +14,5 @@ android/
 .env*.local
 .DS_Store
 npm-debug.*
+supabase/.temp/
+supabase/.branches/
